@@ -1,13 +1,14 @@
 # holyiot-beacon-config
 
-Configure **Holyiot** BLE beacons (Shenzhen Holyiot Technology, nRF52-based) from a Linux PC, without the vendor's
+Configure **Holyiot** BLE beacons (Shenzhen Holyiot Technology, Nordic nRF51/nRF52-based) from a Linux PC, without the vendor's
 phone app. Set the iBeacon major/minor, name, TX power, advertising interval, one-metre RSSI and frame type, and read
 battery level and settings from the beacon's adverts.
 
 The vendor's configuration protocol is not published. It was decoded from the app's Bluetooth traffic; see
 [PROTOCOL.md](PROTOCOL.md) for the details, what is confirmed, and what is not.
 
-Tested with a Holyiot nRF52810 iBeacon configured by the Android app "Holyiot-beacon" (factory name `Holy-IOT`).
+Tested with two Holyiot iBeacons powered by a CR2477 coin cell, configured by the Android app "Holyiot-beacon"
+(factory name `Holy-IOT`).
 Other Holyiot models with the same app probably speak the same protocol, but that is untested.
 Not affiliated with Holyiot. Use at your own risk.
 
@@ -60,8 +61,8 @@ A wrong password is simply rejected by the beacon and nothing is written.
 - **Two beacons from the same batch can carry the same UUID/major/minor.** Give each its own minor first.
 - Changing TX power: if the signal does not change, take the coin cell out and put it back once.
 - All settings survive a battery change.
-- Battery life (vendor figures, CR2032, +4 dBm): about 12 months at 1000 ms, 6.5 months at 500 ms, 4 months at
-  300 ms.
+- Battery life: Holyiot quotes an average of about 25 µA at 1000 ms, 45 µA at 500 ms and 73 µA at 300 ms (+4 dBm).
+  On a CR2032 (~220 mAh) that is roughly 12, 6.5 and 4 months; on a CR2477 (~1000 mAh) roughly 4.5, 2.5 and 1.5 years.
 
 ### Home Assistant
 

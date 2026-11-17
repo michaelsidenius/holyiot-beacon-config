@@ -1,7 +1,7 @@
 # Holyiot beacon configuration protocol
 
 Reverse-engineered in November 2026 from the vendor app **Holyiot-beacon** (Android `com.jx.bledemo`) talking to a
-Holyiot nRF52810 iBeacon (factory name `Holy-IOT`). Method: Android *Developer options → Bluetooth HCI snoop log →
+Holyiot iBeacon powered by a CR2477 coin cell (factory name `Holy-IOT`; Nordic nRF51/nRF52, exact chip not checked). Method: Android *Developer options → Bluetooth HCI snoop log →
 Enabled*, one setting changed at a time in the app, `adb bugreport`, then `btmon -r` on
 `FS/data/misc/bluetooth/logs/btsnoop_hci.log`. Every command below was then replayed from Linux with
 `holyiot_config.py` and checked over the air.

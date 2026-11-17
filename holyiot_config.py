@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Configure Holyiot BLE beacons without the vendor app.
 
-Works with Holyiot (Shenzhen Holyiot Technology) nRF52-based beacons whose vendor app is
+Works with Holyiot (Shenzhen Holyiot Technology) Nordic nRF51/nRF52-based beacons whose vendor app is
 "Holyiot-beacon" (Android com.jx.bledemo). The protocol is described in PROTOCOL.md.
 
 Commands
