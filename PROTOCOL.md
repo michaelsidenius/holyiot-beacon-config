@@ -33,19 +33,28 @@ The password command must come first in every connection. **New values take effe
 
 ## Commands
 
+"Verified" = seen in the app's traffic and replayed from Linux; "app code" = read from the decompiled app
+(Holyiot-beacon 12.6.0), not tried on hardware. Commands without data are sent as just `F3 <cmd> F3` (no length byte).
+
 | cmd | Setting | Data | Status |
 |---|---|---|---|
-| `00` | password (log in) | the password's hex digits packed two per byte: factory `AA14061112` → `AA 14 06 11 12`; a 4-digit password → 2 bytes | confirmed |
-| `03` | major | 2 bytes, big-endian | confirmed |
-| `04` | minor | 2 bytes, big-endian | confirmed |
-| `05` | device name | 12 bytes, ASCII, NUL-padded (`"Spare"` → `53 70 61 72 65 00 … 00`) | confirmed |
-| `06` | TX power | 1 byte, slider step 0–6 (see below) | confirmed (1–6) |
-| `07` | advertising interval | 1 byte, step 0–6 (see below) | confirmed |
-| `08` | one-metre RSSI (measured power in the iBeacon frame) | 1 byte, signed (`C5` = −59) | confirmed |
-| `2F` | frame type | `00` = "Beacon" (iBeacon layout under company ID 0xFFFF), `01` = iBeacon (Apple 0x004C), `02` = Eddystone | 00, 01 confirmed; 02 assumed |
-| `10` | ? | sent once by the app with no length byte; no answer | unknown |
+| `00` | log in with the password (must come first) | the password's hex digits packed two per byte, as typed: `AA14061112` → `AA 14 06 11 12`; a 4-digit password → 2 bytes | verified |
+| `01` | change the password | 6 bytes: the new password's hex digits packed, padded with `00` (the manual: "AA1406111200, the last two 0s can be omitted") | app code |
+| `02` | UUID | 16 bytes | app code |
+| `03` | major | 2 bytes, big-endian | verified |
+| `04` | minor | 2 bytes, big-endian | verified |
+| `05` | device name | 12 bytes, UTF-8, cut at 12 characters, NUL-padded | verified |
+| `06` | TX power | 1 byte, slider step 0–6 (see below) | verified (1–6) |
+| `07` | advertising interval | 1 byte, step 0–6 (see below) | verified |
+| `08` | one-metre RSSI (measured power in the iBeacon frame) | 1 byte, signed, the app allows −128…127 (`C5` = −59) | verified |
+| `09` | MAC address | 6 bytes | app code |
+| `10`–`16` | read a sensor, no data: `10` temperature, `11` air pressure, `12` humidity, `13` vibration, `14` state, `16` battery (`15` handled in the answer, no button) | — | app code; a beacon without the sensor does not answer `10` (seen) |
+| `17` | "External equipment" on/off | 1 byte, 0/1 | app code |
+| `2F` | frame type | `00` = "Beacon" (iBeacon layout under company ID 0xFFFF), `01` = iBeacon (Apple 0x004C), `02` = Eddystone | 00, 01 verified; 02 app code |
+| `20`–`2E` | Eddystone settings: `20` UID advertise, `21` URL advertise, `22` TLM advertise, `23` EID advertise, `24` UID name, `25` namespace, `26` instance, `27` URL name, `28` URL prefix, `29` URL content, `2A` URL suffix, `2B` TLM name, `2C` TLM version, `2D` EID name, `2E` encrypted ID | see the app | app code |
 
-Not captured yet: UUID, MAC address, password change, the sensor/"External Equipment" toggles, the raw "ADV package".
+Sensor answers (app code): `10` → `F3 10 F3 00 <a> <b>` shown as `a.b` °C; `11` → pressure `(a<<8 | b) + 80000` Pa;
+`12` → humidity `a` %; `13` → `(a<<8 | b)`, `0x5555` = no vibration.
 
 ### Interval steps (measured advert spacing)
 
@@ -82,12 +91,14 @@ xx 16 42 52 41 <battery %> <MAC 6 bytes> <interval step> <TX step> 06 00 00     
 
 The name is **only** in the scan response: the iBeacon advert leaves one byte free.
 
-## Factory defaults seen
+## Factory defaults
 
-Name `Holy-IOT` (a second unit came as `Holy-IOT2`), password `AA14061112` (also in Holyiot's manuals), UUID
-`FDA50693-A4E2-4FB1-AFCF-C6EB07647825`, major 10011, minor 19641, measured power −55 (0xFFFF frame) or −65 (Apple
-frame), interval step 4 (500 ms). **Two units shipped with identical UUID/major/minor**: give each its own minor
-before using both.
+The app has **no default names** and writes the name exactly as typed, so the factory name comes from the beacon's
+firmware. Holyiot's manuals give **`Holy-IOT`** for the current models (one table writes `HOLY-IOT`) and **`holyiot`**
+(1–14 bytes) for the older CR2477 "YN" series. Other defaults: password `AA14061112`, UUID
+`FDA50693-A4E2-4FB1-AFCF-C6EB07647825`, major 10011 (newer) or 10032 (YN series); our units had minor 19641, measured
+power −55 (0xFFFF frame) or −65 (Apple frame), interval step 4 (500 ms). **Two units shipped with identical
+UUID/major/minor**: give each its own minor before using both.
 
 ## Home Assistant notes
 

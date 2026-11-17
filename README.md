@@ -24,7 +24,8 @@ python3 -m venv ~/venv-holyiot
 ## Use
 
 ```sh
-# find Holyiot beacons nearby (factory name "Holy-IOT…" or the Holyiot status data in the scan response)
+# find Holyiot beacons nearby (a name starting with "holy", e.g. the factory names "Holy-IOT" / "holyiot",
+# or the Holyiot status data in the scan response)
 ~/venv-holyiot/bin/python holyiot_config.py scan
 
 # what one beacon sends: frame, UUID, major/minor, name, battery %, interval and TX steps
