@@ -11,6 +11,7 @@ Commands
 
 Keys for `set`
   name=<text, max 12 ASCII>   major=<0..65535>   minor=<0..65535>   mpower=<one-metre RSSI, e.g. -59>
+  uuid=<32 hex digits, dashes allowed, e.g. fda50693-a4e2-4fb1-afcf-c6eb07647825>
   tx=<0..6 TX power step>     interval=<0..6 advertising interval step>   frame=beacon|ibeacon|eddystone
 
 Password (never on the command line), tried in this order:
@@ -38,7 +39,7 @@ __version__ = "0.1.0"
 
 NUS_RX = "6e400002-b5a3-f393-e0a9-e50e24dcca9e"  # we write commands here
 NUS_TX = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"  # the beacon answers here (notify)
-CMD = {"password": 0x00, "major": 0x03, "minor": 0x04, "name": 0x05, "tx": 0x06, "interval": 0x07,
+CMD = {"password": 0x00, "uuid": 0x02, "major": 0x03, "minor": 0x04, "name": 0x05, "tx": 0x06, "interval": 0x07,
        "mpower": 0x08, "frame": 0x2F}
 FRAMES = {"beacon": 0, "ibeacon": 1, "eddystone": 2}  # 0 and 1 confirmed, 2 assumed
 FACTORY_PASSWORD = "AA14061112"
@@ -87,6 +88,11 @@ def encode(key, val):
         if not 0 < len(b) <= 12:
             raise SystemExit("name: 1..12 ASCII characters")
         return b + b"\x00" * (12 - len(b))
+    if key == "uuid":
+        h = val.replace("-", "").strip()
+        if not re.fullmatch(r"[0-9A-Fa-f]{32}", h):
+            raise SystemExit("uuid: 32 hex digits (dashes allowed)")
+        return bytes.fromhex(h)
     if key in ("major", "minor"):
         v = int(val)
         if not 0 <= v <= 65535:

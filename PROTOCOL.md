@@ -40,7 +40,7 @@ The password command must come first in every connection. **New values take effe
 |---|---|---|---|
 | `00` | log in with the password (must come first) | the password's hex digits packed two per byte, as typed: `AA14061112` → `AA 14 06 11 12`; a 4-digit password → 2 bytes | verified |
 | `01` | change the password | 6 bytes: the new password's hex digits packed, padded with `00` (the manual: "AA1406111200, the last two 0s can be omitted") | app code |
-| `02` | UUID | 16 bytes | app code |
+| `02` | UUID | 16 bytes | verified |
 | `03` | major | 2 bytes, big-endian | verified |
 | `04` | minor | 2 bytes, big-endian | verified |
 | `05` | device name | 12 bytes, UTF-8, cut at 12 characters, NUL-padded | verified |

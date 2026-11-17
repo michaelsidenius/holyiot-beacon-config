@@ -1,7 +1,7 @@
 # holyiot-beacon-config
 
 Configure **Holyiot** BLE beacons (Shenzhen Holyiot Technology, Nordic nRF51/nRF52-based) from a Linux PC, without the vendor's
-phone app. Set the iBeacon major/minor, name, TX power, advertising interval, one-metre RSSI and frame type, and read
+phone app. Set the iBeacon UUID, major/minor, name, TX power, advertising interval, one-metre RSSI and frame type, and read
 battery level and settings from the beacon's adverts.
 
 The vendor's configuration protocol is not published. It was decoded from the app's Bluetooth traffic; see
@@ -40,6 +40,7 @@ python3 -m venv ~/venv-holyiot
 | Key | Values |
 |---|---|
 | `name` | 1–12 ASCII characters |
+| `uuid` | 32 hex digits, dashes allowed, e.g. `fda50693-a4e2-4fb1-afcf-c6eb07647825` (the factory UUID) |
 | `major`, `minor` | 0–65535 |
 | `mpower` | one-metre RSSI written into the iBeacon frame, e.g. `-59` |
 | `tx` | TX power step 0–6 (6 is the strongest; 0 untested, see PROTOCOL.md) |
